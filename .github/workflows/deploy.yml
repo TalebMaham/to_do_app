@@ -23,14 +23,14 @@ jobs:
     # 🔹 Construire et pousser l'image Spring Boot
     - name: 🏗️ Construire et pousser l'image Spring Boot
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+        docker build -t  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
+        docker push  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
 
     # 🔹 Construire et pousser l'image Angular
     - name: 🏗️ Construire et pousser l'image Angular
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+        docker build -t  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
+        docker push  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
     # 🔹 Déploiement sur le VPS via SSH
     - name: 🚀 Déploiement sur le VPS (Sans code source)
@@ -51,8 +51,8 @@ jobs:
           docker rm mysql_container || true
 
           echo "📥 Récupération des nouvelles images..."
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+          docker pull  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+          docker pull  docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
           docker pull mysql:8.0
 
           echo "📦 Lancement des conteneurs..."
