@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📥 Cloner le repository
+    - name: 📥 Cloner le repository (localement sur GitHub Actions)
       uses: actions/checkout@v3
 
     # 🔹 Connexion à Docker Hub
-    - name: Login to Docker Hub
+    - name: 🔑 Connexion à Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -23,34 +23,67 @@ jobs:
     # 🔹 Construire et pousser l'image Spring Boot
     - name: 🏗️ Construire et pousser l'image Spring Boot
       run: |
-        docker build -t docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
-        docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
 
     # 🔹 Construire et pousser l'image Angular
     - name: 🏗️ Construire et pousser l'image Angular
       run: |
-        docker build -t docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
-        docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
     # 🔹 Déploiement sur le VPS via SSH
-    - name: 🚀 Déploiement sur le VPS
+    - name: 🚀 Déploiement sur le VPS (Sans code source)
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          cd ~/app
-          git pull origin main
-          
-          echo "🔄 Arrêt des anciens conteneurs..."
-          docker-compose down
+          echo "🚀 Déploiement en cours sur le VPS..."
+
+          echo "🔄 Arrêt et suppression des anciens conteneurs..."
+          docker stop spring_app || true
+          docker rm spring_app || true
+          docker stop angular_app || true
+          docker rm angular_app || true
+          docker stop mysql_container || true
+          docker rm mysql_container || true
 
           echo "📥 Récupération des nouvelles images..."
-          docker pull docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
-          docker pull docker.io/${{ secrets.DOCKER_HUB_USERNAME}}/angular-app:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+          docker pull mysql:8.0
 
-          echo "🚀 Lancement des nouveaux conteneurs..."
-          docker-compose up -d
+          echo "🔧 Création d'un réseau Docker..."
+          docker network create my_network || true
+
+          echo "📦 Lancement du conteneur MySQL..."
+          docker run -d \
+            --name mysql_container \
+            --network my_network \
+            -e MYSQL_ROOT_PASSWORD=root \
+            -e MYSQL_DATABASE=spring_db \
+            -e MYSQL_USER=user \
+            -e MYSQL_PASSWORD=password \
+            -p 3307:3306 \
+            mysql:8.0
+
+          echo "📦 Lancement du conteneur Spring Boot..."
+          docker run -d \
+            --name spring_app \
+            --network my_network \
+            -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql_container:3306/spring_db?useSSL=false&serverTimezone=UTC \
+            -e SPRING_DATASOURCE_USERNAME=user \
+            -e SPRING_DATASOURCE_PASSWORD=password \
+            -p 8080:8080 \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+
+          echo "📦 Lancement du conteneur Angular..."
+          docker run -d \
+            --name angular_app \
+            --network my_network \
+            -p 4200:4200 \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
           echo "✅ Déploiement terminé !"
