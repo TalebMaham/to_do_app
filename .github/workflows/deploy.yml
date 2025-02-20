@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v3
 
     # 🔹 Connexion à Docker Hub
-    - name: Login to Docker Hub
+    - name: 🔑 Login to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -23,14 +23,14 @@ jobs:
     # 🔹 Construire et pousser l'image Spring Boot
     - name: 🏗️ Construire et pousser l'image Spring Boot
       run: |
-        docker build -t docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
-        docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest ./demo
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
 
     # 🔹 Construire et pousser l'image Angular
     - name: 🏗️ Construire et pousser l'image Angular
       run: |
-        docker build -t docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
-        docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest ./front
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
     # 🔹 Déploiement sur le VPS via SSH
     - name: 🚀 Déploiement sur le VPS
@@ -40,11 +40,29 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
+          echo "🔧 Vérification de Docker et Docker Compose..."
+          if ! command -v docker &> /dev/null; then
+            echo "🚀 Installation de Docker..."
+            sudo apt update && sudo apt install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
+          fi
+          
+          if ! command -v docker-compose &> /dev/null; then
+            echo "🚀 Installation de Docker Compose..."
+            sudo apt install -y docker-compose
+          fi
+
           echo "📥 Récupération des nouvelles images..."
-          docker pull docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
-          docker pull docker.io/${{ secrets.DOCKER_HUB_USERNAME}}/angular-app:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+
+          echo "🧹 Suppression des anciens conteneurs..."
+          docker stop spring-app angular-app || true
+          docker rm spring-app angular-app || true
 
           echo "🚀 Lancement des nouveaux conteneurs..."
-          docker-compose up -d
+          docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+          docker run -d --name angular-app -p 4200:4200 ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
-          echo "✅ Déploiement terminé !"
+          echo "✅ Déploiement terminé avec succès !"
