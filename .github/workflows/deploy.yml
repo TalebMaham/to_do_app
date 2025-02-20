@@ -55,35 +55,9 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
           docker pull mysql:8.0
 
-          echo "🔧 Création d'un réseau Docker..."
-          docker network create my_network || true
-
-          echo "📦 Lancement du conteneur MySQL..."
-          docker run -d \
-            --name mysql_container \
-            --network my_network \
-            -e MYSQL_ROOT_PASSWORD=root \
-            -e MYSQL_DATABASE=spring_db \
-            -e MYSQL_USER=user \
-            -e MYSQL_PASSWORD=password \
-            -p 3307:3306 \
-            mysql:8.0
-
-          echo "📦 Lancement du conteneur Spring Boot..."
-          docker run -d \
-            --name spring_app \
-            --network my_network \
-            -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql_container:3306/spring_db?useSSL=false&serverTimezone=UTC \
-            -e SPRING_DATASOURCE_USERNAME=user \
-            -e SPRING_DATASOURCE_PASSWORD=password \
-            -p 8080:8080 \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
-
-          echo "📦 Lancement du conteneur Angular..."
-          docker run -d \
-            --name angular_app \
-            --network my_network \
-            -p 4200:4200 \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
+          echo "📦 Lancement des conteneurs..."
+          docker run -d --name mysql_container mysql:8.0
+          docker run -d --name spring_app ${{ secrets.DOCKER_HUB_USERNAME }}/spring-app:latest
+          docker run -d --name angular_app ${{ secrets.DOCKER_HUB_USERNAME }}/angular-app:latest
 
           echo "✅ Déploiement terminé !"
