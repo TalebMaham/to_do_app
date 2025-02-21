@@ -18,7 +18,7 @@ export class AppComponent {
   }
 
   fetchMessage() {
-    this.http.get('http://localhost:8080/api/message', { responseType: 'text' })
+    this.http.get('http://147.93.53.84:8080/api/message', { responseType: 'text' })
       .subscribe(response => {
         this.message = response;
         this.cdr.detectChanges(); // ✅ Mise à jour manuelle du template
