@@ -6,40 +6,55 @@ on:
       - main  # Déclenche l'action lors d'un push sur la branche main
 
 jobs:
-  test-and-deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
     - name: 📥 Cloner le repository
       uses: actions/checkout@v3
 
-    # 🔹 Configuration de Java pour exécuter les tests du backend
-    - name: ☕️ Installer Java 17
+    # 🔹 Configuration Java 17 pour le backend
+    - name: ☕ Installer Java 17
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
 
+    # 🔹 Donner les permissions à mvnw
+    - name: 🔧 Donner les permissions à mvnw
+      run: chmod +x demo/mvnw  # ✅ Correction de l'erreur "Permission denied"
+
     # 🔹 Exécuter les tests du backend (Spring Boot)
-    - name: 🧪 Lancer les tests du backend
+    - name: 🧪 Exécuter les tests backend
       run: |
         cd demo
         ./mvnw test
-      continue-on-error: false  # 🚨 Stoppe le workflow si les tests échouent
 
-    # 🔹 Installation de Node.js pour exécuter les tests du frontend
-    - name: ⚡ Installer Node.js
+    # 🔹 Configuration Node.js pour le frontend
+    - name: 📦 Installer Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
 
-    # 🔹 Installation des dépendances et tests du frontend
-    - name: 🧪 Lancer les tests du frontend
+    # 🔹 Installer les dépendances du frontend
+    - name: 📥 Installer les dépendances frontend
       run: |
         cd front
         npm install
-        npm test -- --watch=false --browsers=ChromeHeadless
-      continue-on-error: false  # 🚨 Stoppe le workflow si les tests échouent
+
+    # 🔹 Exécuter les tests du frontend (Angular)
+    - name: 🧪 Exécuter les tests frontend
+      run: |
+        cd front
+        npm test
+
+  deploy:
+    needs: test  # ✅ Exécute le déploiement SEULEMENT si les tests réussissent
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Cloner le repository
+      uses: actions/checkout@v3
 
     # 🔹 Connexion à Docker Hub
     - name: 🔑 Login to Docker Hub
