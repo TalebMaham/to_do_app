@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HttpClientModule], // ✅ Ajout de HttpClientModule
-  templateUrl: './app.component.html',
+  template: `
+    <h1>J'attends le message</h1>
+    <h2>{{ message }}</h2>
+  `,
 })
 export class AppComponent {
   message: string = '';
@@ -28,7 +30,7 @@ export class AppComponent {
   }
 }
 
-// ✅ Bootstrap de l'application avec HttpClientModule
+// ✅ Bootstrap de l'application avec provideHttpClient()
 bootstrapApplication(AppComponent, {
-  providers: [importProvidersFrom(HttpClientModule)] // ✅ Injection correcte
+  providers: [provideHttpClient()] // ✅ Nouvelle façon d'injecter HttpClient
 });
