@@ -3,13 +3,12 @@ package com.example.demo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.example.demo.controller.AuthController;
 import com.example.demo.service.AuthService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -18,20 +17,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest(classes = DemoApplication.class) // ✅ Charge explicitement l'application pour éviter les erreurs de contexte
-@AutoConfigureMockMvc // ✅ Active MockMvc pour tester les endpoints REST
-@TestPropertySource(locations = "classpath:application-test.properties") // ✅ Charge la config de test (H2)
+@WebMvcTest(AuthController.class) // ✅ Charge uniquement le contrôleur pour éviter les erreurs de contexte
 public class AuthControllerTest {
 
     @Autowired 
-    private MockMvc mockMvc; // ✅ MockMvc permet de tester les requêtes HTTP sans lancer un vrai serveur
+    private MockMvc mockMvc;
 
     @MockitoBean // ✅ Mock du service AuthService
     private AuthService authService;
 
     @BeforeEach
     void setUp() {
-        // ✅ S'assure que le mock est bien configuré avant chaque test
+        // ✅ Vérifie que le mock est bien configuré avant chaque test
         when(authService.registerUser(any())).thenReturn("Utilisateur inscrit avec succès");
     }
 
@@ -49,6 +46,6 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Utilisateur inscrit avec succès")); // ✅ Vérification du message JSON retourné
+                .andExpect(jsonPath("$.message").value("Utilisateur inscrit avec succès"));
     }
 }
