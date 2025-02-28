@@ -25,4 +25,15 @@ public class AuthService {
         userRepository.save(user);
         return "Utilisateur inscrit avec succès";
     }
+
+    public User loginUser(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Nom d'utilisateur incorrect"));
+
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Mot de passe incorrect");
+        }
+
+        return user ;
+    }
 }

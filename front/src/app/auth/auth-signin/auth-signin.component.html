@@ -1,0 +1,27 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card p-4 shadow-lg custom-card">
+    <h2 class="text-center mb-4">Connexion</h2>
+
+    <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+      <!-- Nom d'utilisateur -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Nom d'utilisateur</label>
+        <input id="username" class="form-control custom-input" formControlName="username" type="text" required />
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input id="password" class="form-control custom-input" formControlName="password" type="password" required />
+      </div>
+
+      <!-- Bouton de soumission -->
+      <button type="submit" class="btn custom-btn w-100" [disabled]="signinForm.invalid">
+        Se connecter
+      </button>
+    </form>
+
+    <!-- Message d'erreur -->
+    <p *ngIf="message" class="text-danger text-center mt-3">{{ message }}</p>
+  </div>
+</div>

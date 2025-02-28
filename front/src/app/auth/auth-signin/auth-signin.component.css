@@ -1,0 +1,42 @@
+/* Style de la carte (fond blanc, texte noir, bord arrondi, ombre douce) */
+.custom-card {
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ajoute une ombre légère */
+  }
+  
+  /* Style des champs d'entrée */
+  .custom-input {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+  }
+  
+  .custom-input::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .custom-input:focus {
+    background-color: white;
+    color: black;
+    border-color: black;
+    box-shadow: none;
+  }
+  
+  /* Style du bouton (fond noir, texte blanc) */
+  .custom-btn {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    border: 1px solid black;
+  }
+  
+  .custom-btn:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+  }
+  

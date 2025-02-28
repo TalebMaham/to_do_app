@@ -1,0 +1,52 @@
+<div class="container mt-5">
+
+<!-- Liste des projets -->
+<div class="container mt-5">
+        <h3 class="text-center mb-4">Mes Projets</h3>
+        <div class="row">
+            <div *ngFor="let project of projects" class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                  <h5 class="card-title">{{ project.name }}</h5>
+                <p class="card-text">{{ project.description }}</p>
+                <p class="text-muted">Début : {{ project.startDate | date }}</p>
+                <button class="btn btn-primary" (click)="viewProjectDetail(project.id)">Voir les détails</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+  
+      <div class="card p-4 shadow-lg">
+        <h2 class="text-center mb-4">Créer un Nouveau Projet</h2>
+    
+        <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+          <!-- Nom du projet -->
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom du projet</label>
+            <input id="name" class="form-control" formControlName="name" type="text" required />
+          </div>
+    
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" class="form-control" formControlName="description" required></textarea>
+          </div>
+    
+          <!-- Date de début -->
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Date de début</label>
+            <input id="startDate" class="form-control" formControlName="startDate" type="date" required />
+          </div>
+    
+          <!-- Bouton de soumission -->
+          <button type="submit" class="btn btn-dark w-100" [disabled]="projectForm.invalid">
+            Créer le Projet
+          </button>
+        </form>
+    
+        <!-- Message de confirmation -->
+        <p *ngIf="message" class="text-success text-center mt-3">{{ message }}</p>
+      </div>
+  </div>

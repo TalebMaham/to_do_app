@@ -5,5 +5,9 @@ export const routes: Routes = [
     path: 'auth', 
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) // ✅ Charge `AuthModule` en lazy loading
   },
-  { path: '', redirectTo: '/auth/signup', pathMatch: 'full' } // ✅ Redirige par défaut vers l'inscription
+  { 
+    path: 'project', 
+    loadChildren: () => import('./project/project.module').then(m => m.ProjectModule) 
+  },
+  { path: '', redirectTo: '/auth/signin', pathMatch: 'full' } 
 ];

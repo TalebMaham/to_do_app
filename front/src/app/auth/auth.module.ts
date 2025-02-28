@@ -5,10 +5,15 @@ import { RouterModule } from '@angular/router';
 import { AuthSignupComponent } from './auth-signup/auth-signup.component';
 import { authRoutes } from './auth.routes';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthSigninComponent } from './auth-signin/auth-signin.component';
+
+
+
 
 @NgModule({
   declarations: [
-    AuthSignupComponent
+    AuthSignupComponent,
+    AuthSigninComponent
   ],
   imports: [
     HttpClientModule,
@@ -17,7 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
     RouterModule.forChild(authRoutes)
   ],
   exports: [
-    AuthSignupComponent
+    AuthSignupComponent,
+    AuthSigninComponent
   ]
 })
 export class AuthModule { }
