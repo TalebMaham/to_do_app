@@ -1,38 +1,108 @@
 <div class="container mt-5">
-    <div class="card p-4 shadow-lg">
-      <h2 class="text-center mb-4">{{ project?.name }}</h2>
-      <p><strong>Description :</strong> {{ project?.description }}</p>
-      <p><strong>Date de début :</strong> {{ project?.startDate | date }}</p>
-      
-      <h4 class="mt-4">Membres du projet</h4>
-      <ul class="list-group">
-        <li *ngFor="let member of project?.projectMembers" class="list-group-item">
-          <strong>Nom :</strong> {{ member.user.username }} <br>
-          <strong>Email :</strong> {{ member.user.email }} <br>
-          <strong>Rôle :</strong> {{ member.role }}
-        </li>
-      </ul>
-      
-  
-      <div class="mt-4">
-        <h5>Ajouter un membre</h5>
-      
-        <input type="email" [(ngModel)]="newMemberEmail" class="form-control" placeholder="Entrez l'email du membre" />
-      
-        <select class="form-control form-control-sm mt-2" style="width: 150px;" [(ngModel)]="newMemberRole" >
-            <option value="MEMBER">Membre</option>
-            <option value="ADMIN">Administrateur</option>
-            <option value="OBSERVER">Observateur</option>
-          </select>
-          
-          
-        </div>
-       <div>
-           <button class="btn btn-dark mt-2" (click)="addMember()">Ajouter</button>
-       </div> 
-      
-  
-      <p *ngIf="message" class="text-success mt-2">{{ message }}</p>
+  <div class="card p-4 shadow-lg">
+    <h2 class="text-center mb-4">{{ project?.name }}</h2>
+    <p><strong>Description :</strong> {{ project?.description }}</p>
+    <p><strong>Date de début :</strong> {{ project?.startDate | date }}</p>
+    
+    <h4 class="mt-4">Membres du projet</h4>
+    <ul class="list-group">
+      <li *ngFor="let member of project?.projectMembers" class="list-group-item">
+        <strong>Nom :</strong> {{ member.user.username }} <br>
+        <strong>Email :</strong> {{ member.user.email }} <br>
+        <strong>Rôle :</strong> {{ member.role }}
+      </li>
+    </ul>
+
+    <!-- Section ajout de membre visible uniquement si l'utilisateur est admin -->
+    <div *ngIf="isAdmin" class="mt-4">
+      <h5>Ajouter un membre</h5>
+      <input type="email" [(ngModel)]="newMemberEmail" class="form-control" placeholder="Entrez l'email du membre" />
+      <select class="form-control form-control-sm mt-2" style="width: 150px;" [(ngModel)]="newMemberRole">
+        <option value="MEMBER">Membre</option>
+        <option value="ADMIN">Administrateur</option>
+        <option value="OBSERVER">Observateur</option>
+      </select>
+
+      <button class="btn btn-dark mt-2" (click)="addMember()">Ajouter</button>
     </div>
+
+    <p *ngIf="message" class="text-success mt-2">{{ message }}</p>
+
+    <!-- Section des Tâches -->
+    <h4 class="mt-4">Tâches du projet</h4>
+    <ul class="list-group">
+      <li *ngFor="let task of project?.tasks" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ task.name }}</strong> <br>
+          <small>Description : {{ task.description }}</small> <br>
+          <small>Date d'échéance : {{ task.dueDate | date }}</small> <br>
+          <small>Status : {{ task.status}}</small> <br>
+          <small>Priorité : <span [ngClass]="getPriorityClass(task.priority)">{{ task.priority }}</span></small> <br>
+          <small *ngIf="task.assignee">Assigné à : {{ task.assignee.username }}</small>
+          <small *ngIf="!task.assignee" class="text-danger">Non assigné</small>
+        </div>
+    
+        <div>
+          <button class="btn btn-primary btn-sm" (click)="viewTaskDetails(task.id)">Voir Détails</button>
+          <button class="btn btn-warning btn-sm ms-2" (click)="openAssignModal(task)">Assigner</button>
+        </div>
+      </li>
+    </ul>
+    
+    <!-- Modale pour l'assignation -->
+    <div class="modal fade" id="assignTaskModal" tabindex="-1" aria-labelledby="assignTaskModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignTaskModalLabel">Assigner une tâche</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Sélectionnez un utilisateur pour cette tâche :</p>
+            <select [(ngModel)]="selectedUserId" class="form-select">
+              <option *ngFor="let member of project?.projectMembers" [value]="member.user.id">
+                {{ member.user.username }}
+              </option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-success" (click)="assignTask()">Assigner</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Formulaire pour ajouter une tâche -->
+    <div class="card mt-4 p-3 shadow-sm">
+      <h5>Créer une nouvelle tâche</h5>
+
+      <div class="mb-2">
+        <label for="taskName" class="form-label">Nom de la tâche</label>
+        <input type="text" id="taskName" [(ngModel)]="newTask.name" class="form-control" placeholder="Entrez le nom">
+      </div>
+
+      <div class="mb-2">
+        <label for="taskDescription" class="form-label">Description</label>
+        <textarea id="taskDescription" [(ngModel)]="newTask.description" class="form-control" placeholder="Entrez une description"></textarea>
+      </div>
+
+      <div class="mb-2">
+        <label for="taskDueDate" class="form-label">Date d'échéance</label>
+        <input type="date" id="taskDueDate" [(ngModel)]="newTask.dueDate" class="form-control">
+      </div>
+
+      <div class="mb-2">
+        <label for="taskPriority" class="form-label">Priorité</label>
+        <select id="taskPriority" [(ngModel)]="newTask.priority" class="form-control form-control-sm">
+          <option value="LOW">Basse</option>
+          <option value="MEDIUM">Moyenne</option>
+          <option value="HIGH">Haute</option>
+        </select>
+      </div>
+
+      <button class="btn btn-success btn-sm" (click)="createTask()">Créer la tâche</button>
+    </div>
+
   </div>
-  
+</div>

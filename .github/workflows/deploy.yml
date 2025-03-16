@@ -30,17 +30,17 @@ jobs:
         cd demo
         ./mvnw test
 
-    # # 🔹 Configuration Node.js pour le frontend
-    # - name: 📦 Installer Node.js
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: 18
+    # 🔹 Configuration Node.js pour le frontend
+    - name: 📦 Installer Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-    # # 🔹 Installer les dépendances du frontend
-    # - name: 📥 Installer les dépendances frontend
-    #   run: |
-    #     cd front
-    #     npm install
+    # 🔹 Installer les dépendances du frontend
+    - name: 📥 Installer les dépendances frontend
+      run: |
+        cd front
+        npm install
 
     # # 🔹 Exécuter les tests du frontend (Angular)
     # - name: 🧪 Exécuter les tests frontend
@@ -56,6 +56,9 @@ jobs:
     - name: 📥 Cloner le repository
       uses: actions/checkout@v3
 
+    - name: 🔑 Charger le mot de passe email
+      run: echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> $GITHUB_ENV
+      
     # 🔹 Connexion à Docker Hub
     - name: 🔑 Login to Docker Hub
       uses: docker/login-action@v2

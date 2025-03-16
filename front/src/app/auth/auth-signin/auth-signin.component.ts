@@ -25,14 +25,13 @@ export class AuthSigninComponent {
       this.authService.signin(this.signinForm.value).subscribe({
         next: (response) => {
           this.message = response.message || 'Connexion réussie !';
-          console.log('Token reçu:', response.token);
-          localStorage.setItem('token', response.token); // ⚠️ À sécuriser en production
-          console.log("Connexion reussite") 
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('user_name', response.user_name);  // ⚠️ À sécuriser en production
           console.log("Est connecté :", this.authService.isLoggedIn())
           this.router.navigate(['/project']);
         },
         error: (err) => {
-          this.message = 'Erreur lors de la connexion';
+          this.message = err.error.error || 'Erreur lors de la connexion';
           console.error('Erreur:', err);
         }
       });

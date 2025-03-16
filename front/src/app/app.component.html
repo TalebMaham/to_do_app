@@ -1,19 +1,33 @@
-<nav>
-    <ul>
-      <li><a routerLink="/auth/signup">Inscription</a></li>
-    </ul>
-    <ul>
-      <li><a routerLink="/auth/signin">Connexion</a></li>
-    </ul>
-    <ul>
-      <li><a routerLink="/project">Projects</a></li>
-    </ul>
-    <ul>
-      <li><button (click)="logout()">Deconnexion</button></li>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar p-3">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a routerLink="/auth/signup" class="nav-link">
+          🔹 Inscription
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/auth/signin" class="nav-link">
+          🔑 Connexion
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/project" class="nav-link">
+          📁 Projects
+        </a>
+      </li>
+      <li class="nav-item mt-3">
+        <button class="btn btn-danger w-100" (click)="logout()">
+          ❌ Déconnexion
+        </button>
+      </li>
     </ul>
   </nav>
-  
-  <hr>
-  
-  <router-outlet></router-outlet> <!-- ✅ Affiche les composants en fonction de la route -->
-  
+
+  <!-- Contenu principal -->
+  <div class="content p-4 flex-grow-1">
+    <h1>Bonjour {{userName}}</h1>
+    <router-outlet></router-outlet>
+  </div>
+</div>

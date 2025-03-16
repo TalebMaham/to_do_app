@@ -1,0 +1,33 @@
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+  }
+  
+  .content {
+    margin-left: 220px;
+  }
+  
+  .nav-link {
+    color: #333;
+    font-weight: 500;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  
+  .nav-link:hover {
+    background-color: #e9ecef;
+    border-radius: 5px;
+  }
+  
+  .btn-danger {
+    font-weight: bold;
+  }
+  

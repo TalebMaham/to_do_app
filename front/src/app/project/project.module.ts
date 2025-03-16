@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProjectComponent } from './project.component';
 import { projectRoutes } from './project.routes';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { TaskDetailComponent } from './project-detail/task-detail/task-detail.component';
 
 
 
@@ -14,7 +15,8 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 @NgModule({
   declarations: [
     ProjectComponent,
-    ProjectDetailComponent
+    ProjectDetailComponent,
+    TaskDetailComponent
   ],
   imports: [
     HttpClientModule,
@@ -25,7 +27,8 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
   ],
   exports: [
     ProjectComponent,
-    ProjectDetailComponent
+    ProjectDetailComponent,
+    TaskDetailComponent
   ]
 })
 export class ProjectModule { }

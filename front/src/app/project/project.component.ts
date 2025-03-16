@@ -28,7 +28,7 @@ export class ProjectComponent implements OnInit {
 
   ngOnInit() {
     this.adminId = localStorage.getItem("user_id")
-    this.loadPorjectsByAdmin(this.adminId)
+    this.loadPorjectsByUser(this.adminId)
   }
 
   onSubmit() {
@@ -38,12 +38,28 @@ export class ProjectComponent implements OnInit {
         (response) => {
           this.message = 'Projet créé avec succès !';
           this.projectForm.reset();
-          this.loadPorjectsByAdmin(this.adminId) // Recharger la liste des projets après ajout
+          this.loadPorjectsByUser(this.adminId) // Recharger la liste des projets après ajout
         },
         (error) => {
           this.message = 'Erreur lors de la création du projet.';
         }
       );
+    }
+  }
+
+
+
+  loadPorjectsByUser(userId : any) {
+    console.log("user_id  est  : ", userId)
+    if (userId){
+      this.projectService.getProjectsByUser(userId).subscribe(
+        (data) => {
+          this.projects = data; 
+        },
+        (error) => {
+          console.error('Erreur lors du chargement des projets', error);
+        }
+      ); 
     }
   }
 

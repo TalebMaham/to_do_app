@@ -1,0 +1,100 @@
+<div class="container mt-3">
+  <div class="card p-3 shadow">
+    <h2 class="text-center">{{ task?.name }}</h2>
+    <p><strong>Description :</strong> {{ task?.description }}</p>
+    <p><strong>Date d'échéance :</strong> {{ task?.dueDate | date }}</p>
+    <p><strong>Status :</strong> {{ task?.status}}</p>
+    <p><strong>Priorité :</strong> <span [ngClass]="getPriorityClass(task?.priority)">{{ task?.priority }}</span></p>
+
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button class="btn btn-primary" (click)="openEditModal()">Modifier</button>
+      <button class="btn btn-secondary" [routerLink]="['/project-detail', projectId]">
+        Retour
+      </button>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Historique des modifications -->
+<div class="card mt-4 p-3 shadow">
+  <h4>Historique des modifications</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Champ modifié</th>
+        <th>Ancienne valeur</th>
+        <th>Nouvelle valeur</th>
+        <th>Modifié par</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entry of history">
+        <td>{{ entry.fieldChanged }}</td>
+        <td>{{ entry.oldValue }}</td>
+        <td>{{ entry.newValue }}</td>
+        <td>{{ entry.modifiedBy?.username }}</td>
+        <td>{{ entry.modifiedAt | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<!-- Modale Bootstrap pour la modification -->
+<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editTaskModalLabel">Modifier la tâche</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateTask()">
+          <div class="mb-3">
+            <label for="name" class="form-label">Nom de la tâche :</label>
+            <input type="text" id="name" class="form-control" [(ngModel)]="editTask.name" name="name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Description :</label>
+            <textarea id="description" class="form-control" [(ngModel)]="editTask.description" name="description"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="status" class="form-label">Status :</label>
+            <select class="form-control form-control-sm mt-2" style="width: 150px;" [(ngModel)]="editTask.status"  name = "status">
+              <option value="TODO">TODO</option>
+              <option value="IN_PROGRESS">IN_PROGRESS</option>
+              <option value="REVIEW">REVIEW</option>
+              <option value="DONE">DONE</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+
+          </div>
+
+          <div class="mb-3">
+            <label for="dueDate" class="form-label">Date d'échéance :</label>
+            <input type="date" id="dueDate" class="form-control" [(ngModel)]="editTask.dueDate" name="dueDate">
+          </div>
+
+          
+
+          <div class="mb-3">
+            <label for="priority" class="form-label">Priorité :</label>
+            <select id="priority" class="form-select" [(ngModel)]="editTask.priority" name="priority">
+              <option value="HIGH">Haute</option>
+              <option value="MEDIUM">Moyenne</option>
+              <option value="LOW">Basse</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

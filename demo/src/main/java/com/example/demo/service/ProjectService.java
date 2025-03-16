@@ -10,12 +10,12 @@ import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +50,18 @@ public class ProjectService {
     // Récupérer les projets d'un administrateur spécifique
     public List<Project> getProjectsByAdmin(Long adminId) {
         return projectRepository.findByAdminId(adminId);
+    }
+
+     // Récupérer les projets où l'utilisateur est admin ou membre
+    public List<Project> getProjectsByUser(Long userId) {
+        List<Project> adminProjects = projectRepository.findByAdminId(userId);
+        List<Project> memberProjects = projectRepository.findByUserIsMember(userId);
+
+        // Fusionner les listes sans doublons
+        Set<Project> allProjects = new HashSet<>(adminProjects);
+        allProjects.addAll(memberProjects);
+
+        return List.copyOf(allProjects);
     }
 
 

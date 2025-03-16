@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +38,10 @@ public class Project {
     // Liste des membres avec rôles
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProjectMember> projectMembers = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
+
 
     public Project(String name, String description, LocalDate startDate, User admin) {
         this.name = name;

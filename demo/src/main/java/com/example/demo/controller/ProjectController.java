@@ -54,6 +54,12 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectsByAdmin(adminId));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Project>> getProjectsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(projectService.getProjectsByUser(userId));
+    }
+    
+
     // Récupérer un projet par son ID (détail du projet)
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {

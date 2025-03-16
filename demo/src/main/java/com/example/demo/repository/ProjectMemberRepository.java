@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.model.Project;
 import com.example.demo.model.ProjectMember;
+import com.example.demo.model.ProjectRole;
 import com.example.demo.model.User;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
     List<ProjectMember> findByProject(Project project);
     List<ProjectMember> findByUser(User user);
     boolean existsByProjectAndUser(Project project, User user);
+    boolean existsByProjectAndUserIdAndRoleIn(Project project, Long userId, List<ProjectRole> roles);
 }
