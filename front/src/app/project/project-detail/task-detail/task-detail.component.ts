@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TaskService } from './task.service';
 import { Modal } from 'bootstrap';
+import { ProjectService } from '../../project.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -16,11 +17,16 @@ export class TaskDetailComponent implements OnInit {
   projectId: number | null = null;
   history: any[] = []; // Stocker l'historique des modifications
   userId: string | null = ''; // ID de l'utilisateur connecté
+  isMember: boolean = false; 
+  isAdmin: boolean = false;
+  project: any;
+
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private projectService: ProjectService
   ) {}
 
   ngOnInit() {
@@ -31,6 +37,7 @@ export class TaskDetailComponent implements OnInit {
       if (this.taskId && this.projectId) {
         this.getTaskDetails(this.taskId, this.projectId);
         this.getTaskHistory(this.taskId, this.projectId); // Charger l'historique
+        this.loadProjectDetails(this.projectId);
       }
     });
   }
@@ -88,5 +95,79 @@ export class TaskDetailComponent implements OnInit {
       case 'LOW': return 'text-success';
       default: return '';
     }
+  }
+
+  
+  loadProjectDetails(projectId: number) {
+    this.projectService.getProjectById(projectId).subscribe(
+      (data) => {
+        if (!data) {
+          console.error("Aucun projet trouvé avec cet ID !");
+          return;
+        }
+
+        this.project = data;
+        console.log("Projet chargé :", this.project);
+
+        this.checkAdminStatus();
+        this.checkMemberStatus();
+      },
+      (error) => {
+        console.error('Erreur lors du chargement du projet', error);
+      }
+    );
+  }
+
+  checkAdminStatus() {
+    console.log("checkAdminStatus appellé")
+    if (!this.project || !this.userId) {
+      this.isAdmin = false;
+      console.log("isAdmin1:", this.isAdmin);
+      return;
+    }
+
+    // Vérifier si l'utilisateur est l'administrateur créateur du projet
+    if (this.project.admin && this.project.admin.id == this.userId) {
+      this.isAdmin = true;
+      console.log("isAdmin2:", this.isAdmin);
+      return;
+    }
+
+    // Vérifier si l'utilisateur est un admin dans la liste des membres
+    const userInProject = this.project.projectMembers.find((member: any) => member.user.id == this.userId);
+
+    if (userInProject && userInProject.role === "ADMIN") {
+      this.isAdmin = true;
+    } else {
+      this.isAdmin = false;
+    }
+
+    console.log("isAdmin3:", this.isAdmin);
+  }
+  checkMemberStatus() {
+    console.log("checkMemberStatus appellé")
+    if (!this.project || !this.userId) {
+      this.isMember = false;
+      console.log("isMember1:", this.isMember);
+      return;
+    }
+
+    // Vérifier si l'utilisateur est l'administrateur créateur du projet
+    if (this.project.admin && this.project.admin.id == this.userId) {
+      this.isMember = true;
+      console.log("isMember2:", this.isMember);
+      return;
+    }
+
+    // Vérifier si l'utilisateur est un membre dans la liste des membres
+    const userInProject = this.project.projectMembers.find((member: any) => member.user.id == this.userId);
+
+    if (userInProject && userInProject.role === "MEMBER") {
+      this.isMember = true;
+    } else {
+      this.isMember = false;
+    }
+
+    console.log("isMember3:", this.isMember);
   }
 }

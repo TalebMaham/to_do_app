@@ -21,6 +21,7 @@ export class ProjectDetailComponent implements OnInit {
   selectedUserId: number | null = null;
   isAdmin: boolean = false;
   userId: string | null = ''; // ID de l'utilisateur connecté
+  isMember: boolean = false; 
 
 
   newTask = {
@@ -57,6 +58,7 @@ export class ProjectDetailComponent implements OnInit {
         console.log("Projet chargé :", this.project);
 
         this.checkAdminStatus();
+        this.checkMemberStatus();
       },
       (error) => {
         console.error('Erreur lors du chargement du projet', error);
@@ -198,5 +200,31 @@ export class ProjectDetailComponent implements OnInit {
     }
 
     console.log("isAdmin:", this.isAdmin);
+  }
+
+
+  
+  checkMemberStatus() {
+    if (!this.project || !this.userId) {
+      this.isMember = false;
+      return;
+    }
+
+    // Vérifier si l'utilisateur est l'administrateur créateur du projet
+    if (this.project.admin && this.project.admin.id == this.userId) {
+      this.isMember = true;
+      return;
+    }
+
+    // Vérifier si l'utilisateur est un membre dans la liste des membres
+    const userInProject = this.project.projectMembers.find((member: any) => member.user.id == this.userId);
+
+    if (userInProject && userInProject.role === "MEMBER") {
+      this.isMember = true;
+    } else {
+      this.isMember = false;
+    }
+
+    console.log("isMember:", this.isMember);
   }
 }
