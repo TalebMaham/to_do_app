@@ -9,7 +9,7 @@ import com.example.demo.service.AuthService;
 import java.util.Map;
 import java.util.UUID;
 
-import com.example.demo.model.User;;
+import com.example.demo.model.User;
 
 @RestController
 @RequestMapping("/api/auth")

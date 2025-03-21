@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Project;
+import com.example.demo.model.ProjectRole;
 import com.example.demo.model.Task;
 import com.example.demo.model.TaskHistory;
 import com.example.demo.model.TaskPriority;
@@ -127,11 +128,22 @@ public class TaskService {
 
     public Task updateTask(Long taskId, Map<String, Object> updates, Long userId) {
         Task task = taskRepository.findById(taskId)
-                        .orElseThrow(() -> new NoSuchElementException("Task not found with ID: " + taskId));
-
+            .orElseThrow(() -> new NoSuchElementException("Task not found with ID: " + taskId));
+    
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
-
+            .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+    
+        Project project = task.getProject();
+    
+        // Vérification améliorée de l'autorisation
+        boolean isAuthorized = project.getAdmin().getId().equals(userId) ||
+            project.getProjectMembers().stream().anyMatch(pm -> 
+                pm.getUser().getId().equals(userId) && !pm.getRole().equals(ProjectRole.OBSERVER));
+    
+        if (!isAuthorized) {
+            throw new RuntimeException("Vous n'avez pas le droit de modifier cette tâche.");
+        }
+    
         updates.forEach((key, value) -> {
             switch (key) {
                 case "name":
@@ -148,7 +160,7 @@ public class TaskService {
                     break;
                 case "priority":
                     saveHistory(task, "priority", task.getPriority().name(), (String) value, user);
-                    task.setPriority(TaskPriority.valueOf((String)value));
+                    task.setPriority(TaskPriority.valueOf((String) value));
                     break;
                 case "deadLine":
                     saveHistory(task, "deadLine", task.getDeadline() != null ? task.getDeadline().toString() : "null", value.toString(), user);
@@ -156,18 +168,18 @@ public class TaskService {
                     break;
                 case "status":
                     saveHistory(task, "status", task.getStatus().name(), (String) value, user);
-                    task.setStatus(TaskStatus.valueOf((String)value));
+                    task.setStatus(TaskStatus.valueOf((String) value));
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
-
+    
         return taskRepository.save(task);
     }
-
+    
     private void saveHistory(Task task, String field, String oldValue, String newValue, User user) {
-        if (!oldValue.equals(newValue)) { // Évite d'enregistrer si aucune modification réelle
+        if (!oldValue.equals(newValue)) { 
             TaskHistory history = new TaskHistory(task, field, oldValue, newValue, user);
             taskHistoryRepository.save(history);
         }
