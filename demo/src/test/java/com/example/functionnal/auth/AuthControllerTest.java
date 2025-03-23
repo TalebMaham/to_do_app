@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.dto.LoginRequest;
@@ -37,6 +38,7 @@ public class AuthControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();

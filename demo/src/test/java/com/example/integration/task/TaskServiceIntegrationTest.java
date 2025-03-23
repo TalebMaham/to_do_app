@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.model.Project;
@@ -31,6 +32,8 @@ public class TaskServiceIntegrationTest {
     @Autowired private UserRepository userRepository;
     @Autowired private TaskRepository taskRepository;
 
+    
+    @Transactional
     @BeforeEach
     void cleanDb() {
         taskRepository.deleteAll();
