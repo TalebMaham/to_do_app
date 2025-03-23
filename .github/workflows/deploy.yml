@@ -28,7 +28,7 @@ jobs:
     - name: 🧪 Exécuter les tests backend
       run: |
         cd demo
-        ./mvn test
+        ./mvnw test
 
     # 🔹 Configuration Node.js pour le frontend
     - name: 📦 Installer Node.js
