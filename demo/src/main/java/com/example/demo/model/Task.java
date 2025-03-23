@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,6 +38,10 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assignee_id", nullable = true) // Peut être null à la création
     private User assignee;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskHistory> history;
+
 
 
     @Enumerated(EnumType.STRING)

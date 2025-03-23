@@ -11,9 +11,9 @@ public class TaskHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "task_id", nullable = false)
-    
     private Task task;
 
     @Column(nullable = false)
@@ -28,7 +28,7 @@ public class TaskHistory {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "modified_by", nullable = false)
     private User modifiedBy;
 
@@ -39,21 +39,17 @@ public class TaskHistory {
         this.fieldChanged = fieldChanged;
         this.oldValue = oldValue;
         this.newValue = newValue;
-        this.modifiedAt = LocalDateTime.now();
         this.modifiedBy = modifiedBy;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.modifiedAt = LocalDateTime.now();
+    }
 
+    // Getters
     public Long getId() {
         return id;
-    }
-
-    public LocalDateTime getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public User getModifiedBy() {
-        return modifiedBy;
     }
 
     public Task getTask() {
@@ -64,13 +60,44 @@ public class TaskHistory {
         return fieldChanged;
     }
 
-    public String getNewValue() {
-        return newValue;
-    }
-
     public String getOldValue() {
         return oldValue;
     }
 
-   
+    public String getNewValue() {
+        return newValue;
+    }
+
+    public LocalDateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public User getModifiedBy() {
+        return modifiedBy;
+    }
+
+    // Setters (utiles pour les tests ou le mapping manuel)
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public void setFieldChanged(String fieldChanged) {
+        this.fieldChanged = fieldChanged;
+    }
+
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
+    }
+
+    public void setNewValue(String newValue) {
+        this.newValue = newValue;
+    }
+
+    public void setModifiedBy(User modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public void setModifiedAt(LocalDateTime modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 }
