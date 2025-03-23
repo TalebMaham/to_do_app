@@ -48,10 +48,12 @@ jobs:
         npm install
 
     # 🔹 Exécuter les tests du frontend (Angular)
-    - name: 🧪 Exécuter les tests frontend
+    - name: 🧪 Exécuter les tests frontend (Angular)
       run: |
         cd front
-        npm test
+        npm ci
+        npx ng test --watch=false --browsers=ChromeHeadless
+
 
   deploy:
     needs: test  # ✅ Exécute le déploiement SEULEMENT si les tests réussissent
