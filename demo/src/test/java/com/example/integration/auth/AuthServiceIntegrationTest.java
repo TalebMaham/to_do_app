@@ -15,6 +15,10 @@ import com.example.demo.DemoApplication;
 import com.example.demo.dto.SignupRequest;
 import com.example.demo.exceptions.user_exceptions.AuthenticationException;
 import com.example.demo.model.User;
+import com.example.demo.repository.ProjectMemberRepository;
+import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.TaskHistoryRepository;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 
@@ -25,13 +29,26 @@ public class AuthServiceIntegrationTest {
     @Autowired
     private AuthService authService;
 
+   @Autowired private TaskHistoryRepository taskHistoryRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired private ProjectMemberRepository projectMemberRepository;
+
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional
     @BeforeEach
     void cleanDb() {
-        userRepository.deleteAll();
+        // 💥 Supprimer dans l’ordre inverse des dépendances
+        taskHistoryRepository.deleteAll(); // dépend de Task
+        projectMemberRepository.deleteAll(); 
+        taskRepository.deleteAll();        // dépend de Project et User
+        projectRepository.deleteAll();     // dépend de User
+        userRepository.deleteAll();        // indépendant (en dernier)
     }
 
     @Test
