@@ -25,10 +25,15 @@ jobs:
       run: chmod +x demo/mvnw  # ✅ Correction de l'erreur "Permission denied"
 
     # 🔹 Exécuter les tests du backend (Spring Boot)
+
+
+
     - name: 🧪 Exécuter les tests backend
       run: |
         cd demo
-        ./mvnw test
+        ./mvnw test -Dspring.profiles.active=test
+
+
 
     # 🔹 Configuration Node.js pour le frontend
     - name: 📦 Installer Node.js
