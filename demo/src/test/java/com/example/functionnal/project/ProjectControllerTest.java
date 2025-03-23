@@ -14,6 +14,7 @@ import com.example.demo.DemoApplication;
 import com.example.demo.dto.ProjectRequest;
 import com.example.demo.model.Project;
 import com.example.demo.model.User;
+import com.example.demo.repository.ProjectMemberRepository;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.TaskHistoryRepository;
 import com.example.demo.repository.TaskRepository;
@@ -33,14 +34,14 @@ public class ProjectControllerTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @Autowired
-    private TaskHistoryRepository taskHistoryRepository;
+    @Autowired private TaskHistoryRepository taskHistoryRepository;
 
     @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired private ProjectMemberRepository projectMemberRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,6 +50,7 @@ public class ProjectControllerTest {
     void cleanDb() {
         // 💥 Supprimer dans l’ordre inverse des dépendances
         taskHistoryRepository.deleteAll(); // dépend de Task
+        projectMemberRepository.deleteAll(); 
         taskRepository.deleteAll();        // dépend de Project et User
         projectRepository.deleteAll();     // dépend de User
         userRepository.deleteAll();        // indépendant (en dernier)
