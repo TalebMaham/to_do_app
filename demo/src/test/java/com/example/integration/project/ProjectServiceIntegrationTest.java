@@ -11,11 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.model.Project;
 import com.example.demo.model.User;
 import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.TaskHistoryRepository;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ProjectService;
 
@@ -24,13 +27,25 @@ import com.example.demo.service.ProjectService;
 public class ProjectServiceIntegrationTest {
 
     @Autowired private ProjectService projectService;
-    @Autowired private UserRepository userRepository;
-    @Autowired private ProjectRepository projectRepository;
+    @Autowired
+    private TaskHistoryRepository taskHistoryRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
-    void clean() {
-        projectRepository.deleteAll();
-        userRepository.deleteAll();
+    void cleanDb() {
+        // 💥 Supprimer dans l’ordre inverse des dépendances
+        taskHistoryRepository.deleteAll(); // dépend de Task
+        taskRepository.deleteAll();        // dépend de Project et User
+        projectRepository.deleteAll();     // dépend de User
+        userRepository.deleteAll();        // indépendant (en dernier)
     }
 
     @Test

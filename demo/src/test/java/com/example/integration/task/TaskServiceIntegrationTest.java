@@ -19,6 +19,7 @@ import com.example.demo.model.Task;
 import com.example.demo.model.TaskPriority;
 import com.example.demo.model.User;
 import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.TaskHistoryRepository;
 import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TaskService;
@@ -28,17 +29,25 @@ import com.example.demo.service.TaskService;
 public class TaskServiceIntegrationTest {
 
     @Autowired private TaskService taskService;
-    @Autowired private ProjectRepository projectRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private TaskRepository taskRepository;
+    @Autowired
+    private TaskHistoryRepository taskHistoryRepository;
 
-    
-    @Transactional
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void cleanDb() {
-        taskRepository.deleteAll();
-        projectRepository.deleteAll();
-        userRepository.deleteAll();
+        // 💥 Supprimer dans l’ordre inverse des dépendances
+        taskHistoryRepository.deleteAll(); // dépend de Task
+        taskRepository.deleteAll();        // dépend de Project et User
+        projectRepository.deleteAll();     // dépend de User
+        userRepository.deleteAll();        // indépendant (en dernier)
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.dto.TaskRequest;
@@ -42,6 +43,7 @@ public class TaskControllerTest {
     private User admin;
     private Project project;
 
+    @Transactional
     @BeforeEach
     void setup() {
         taskHistoryRepository.deleteAll();

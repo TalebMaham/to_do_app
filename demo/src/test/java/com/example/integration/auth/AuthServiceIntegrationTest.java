@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.dto.SignupRequest;
@@ -27,6 +28,7 @@ public class AuthServiceIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     @BeforeEach
     void cleanDb() {
         userRepository.deleteAll();

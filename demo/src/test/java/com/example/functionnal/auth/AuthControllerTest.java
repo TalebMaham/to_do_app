@@ -15,6 +15,9 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.SignupRequest;
 import com.example.demo.exceptions.user_exceptions.UsernameAlreadyTakenException;
 import com.example.demo.model.User;
+import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.TaskHistoryRepository;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,12 +39,24 @@ public class AuthControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private TaskHistoryRepository taskHistoryRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
-    @Transactional
     @BeforeEach
-    void setUp() {
-        userRepository.deleteAll();
+    void cleanDb() {
+        // 💥 Supprimer dans l’ordre inverse des dépendances
+        taskHistoryRepository.deleteAll(); // dépend de Task
+        taskRepository.deleteAll();        // dépend de Project et User
+        projectRepository.deleteAll();     // dépend de User
+        userRepository.deleteAll();        // indépendant (en dernier)
     }
 
     @Test

@@ -15,6 +15,8 @@ import com.example.demo.dto.ProjectRequest;
 import com.example.demo.model.Project;
 import com.example.demo.model.User;
 import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.TaskHistoryRepository;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
@@ -31,14 +33,25 @@ public class ProjectControllerTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @Autowired private UserRepository userRepository;
-    @Autowired private ProjectRepository projectRepository;
+    @Autowired
+    private TaskHistoryRepository taskHistoryRepository;
 
-    @Transactional
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
-    void setup() {
-        projectRepository.deleteAll();
-        userRepository.deleteAll();
+    void cleanDb() {
+        // 💥 Supprimer dans l’ordre inverse des dépendances
+        taskHistoryRepository.deleteAll(); // dépend de Task
+        taskRepository.deleteAll();        // dépend de Project et User
+        projectRepository.deleteAll();     // dépend de User
+        userRepository.deleteAll();        // indépendant (en dernier)
     }
 
     @Test
