@@ -23,4 +23,20 @@ public class ProjectRequest {
     public Long getAdminId() {
         return adminId;
     }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 }

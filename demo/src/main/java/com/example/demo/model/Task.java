@@ -127,5 +127,10 @@ public class Task {
         return status;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
 }
 

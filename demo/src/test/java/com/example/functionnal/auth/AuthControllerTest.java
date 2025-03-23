@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.demo.DemoApplication;
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.SignupRequest;
 import com.example.demo.exceptions.user_exceptions.UsernameAlreadyTakenException;
 import com.example.demo.model.User;
@@ -64,4 +65,53 @@ public class AuthControllerTest {
                 .andExpect(status().isConflict()) // Ou 409 si tu as une exception personnalisée avec handler
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UsernameAlreadyTakenException));
     }
+
+    @Test
+    void signin_shouldReturnToken_whenCredentialsAreCorrect() throws Exception {
+    // Arrange : on enregistre un user dans la base
+    User user = new User("loginuser", "login@email.com", "pass123");
+    userRepository.save(user);
+
+    LoginRequest request = new LoginRequest("loginuser", "pass123");
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/signin") // adapte le chemin si nécessaire
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("Connexion réussie"))
+            .andExpect(jsonPath("$.token").exists())
+            .andExpect(jsonPath("$.user_id").value(user.getId().toString()))
+            .andExpect(jsonPath("$.user_name").value("loginuser"));
+    }
+
+
+    @Test
+    void signin_shouldReturnError_whenUsernameNotFound() throws Exception {
+        LoginRequest request = new LoginRequest("unknown", "pass");
+
+        mockMvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Nom d'utilisateur incorrect"));
+    }
+
+    @Test
+    void signin_shouldReturnError_whenPasswordIsWrong() throws Exception {
+        userRepository.save(new User("loginuser", "login@email.com", "realpass"));
+
+        LoginRequest request = new LoginRequest("loginuser", "wrongpass");
+
+        mockMvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Mot de passe incorrect"));
+    }
+
+
+
+
+
 }

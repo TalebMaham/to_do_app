@@ -1,28 +1,48 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { provideHttpClient } from '@angular/common/http';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from './auth/auth.service';
+import { Router } from '@angular/router';
 
 describe('AppComponent', () => {
-  let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let router: Router;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent], // ✅ `AppComponent` est standalone, pas besoin d'autres imports
-      providers: [provideHttpClient()], // ✅ Nouvelle manière d'injecter HttpClient
-      schemas: [NO_ERRORS_SCHEMA] // ✅ Ignore les erreurs de composants inconnus
-    }).compileComponents();
-  });
+    mockAuthService = jasmine.createSpyObj('AuthService', ['logout']);
 
-  beforeEach(() => {
+    await TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule, // ✅ Fournit Router
+        AppComponent
+      ],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService } // ✅ Fournit mock AuthService
+      ]
+    }).compileComponents();
+
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router); // ✅ Injecte le Router proprement
     fixture.detectChanges();
   });
 
-  it('should display the expected messages', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain("J'attends le message");
+  it('should create the app', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should read user_name from localStorage on init', () => {
+    localStorage.setItem('user_name', 'Sidi');
+    component.ngOnInit();
+    expect(component.userName).toBe('Sidi');
+  });
+
+  it('should call AuthService.logout and navigate on logout()', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    component.logout();
+    expect(mockAuthService.logout).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/auth/signin']);
   });
 });

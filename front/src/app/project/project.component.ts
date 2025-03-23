@@ -17,7 +17,7 @@ export class ProjectComponent implements OnInit {
   adminId : any = "" ; 
 
   constructor(private fb: FormBuilder, private projectService: ProjectService, private router : Router ) {
-    this.adminId = localStorage.getItem("user_id")
+    this.adminId = Number(localStorage.getItem("user_id"))
     this.projectForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', [Validators.required, Validators.minLength(10)]],
@@ -27,12 +27,12 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.adminId = localStorage.getItem("user_id")
+    this.adminId = Number(localStorage.getItem("user_id"))
     this.loadPorjectsByUser(this.adminId)
   }
 
   onSubmit() {
-    this.adminId = localStorage.getItem("user_id")
+    this.adminId = Number(localStorage.getItem("user_id"))
     if (this.projectForm.valid) {
       this.projectService.createProject(this.projectForm.value).subscribe(
         (response) => {

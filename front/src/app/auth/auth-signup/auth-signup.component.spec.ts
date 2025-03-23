@@ -1,70 +1,89 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
 import { AuthSignupComponent } from './auth-signup.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '../auth.service';
-
-jest.mock('../auth.service'); // ✅ Mock automatique de AuthService
+import { of, throwError } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 describe('AuthSignupComponent', () => {
   let component: AuthSignupComponent;
   let fixture: ComponentFixture<AuthSignupComponent>;
-  let mockAuthService: jest.Mocked<AuthService>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    // ✅ Création du mock automatique avec Jest
-    mockAuthService = new AuthService(null as any) as jest.Mocked<AuthService>;
-    mockAuthService.signup = jest.fn();
+    const spy = jasmine.createSpyObj('AuthService', ['signup']);
 
     await TestBed.configureTestingModule({
-      imports: [
-        AuthSignupComponent, // ✅ Composant standalone
-        ReactiveFormsModule,
-        HttpClientTestingModule, // ✅ Simulation des requêtes HTTP
-      ],
-      providers: [{ provide: AuthService, useValue: mockAuthService }],
+      imports: [ReactiveFormsModule],
+      declarations: [AuthSignupComponent],
+      providers: [{ provide: AuthService, useValue: spy }]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(AuthSignupComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+
+    fixture.detectChanges(); // Initialiser la détection de changement
   });
 
-  afterEach(() => {
-    jest.clearAllMocks(); // ✅ Nettoyage des mocks après chaque test
-  });
-
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show success message on valid submission', () => {
-    const mockResponse = { message: 'Utilisateur inscrit avec succès' };
-    mockAuthService.signup.mockReturnValue(of(mockResponse)); // ✅ Correction du mock
-
-    component.signupForm.setValue({
-      username: 'testuser',
-      email: 'test@mail.com',
-      password: 'password123',
-    });
-
-    component.onSubmit();
-    expect(component.message).toBe('Utilisateur inscrit avec succès');
+  it('should have an invalid form when empty', () => {
+    expect(component.signupForm.valid).toBeFalse();
   });
 
-  it('should show error message on failure', () => {
-    mockAuthService.signup.mockReturnValue(throwError(() => new Error('Erreur'))); // ✅ Correction du mock
+  it('should call AuthService.signup on valid form submit and show success message', fakeAsync(() => {
+    const mockResponse = { message: 'Bienvenue !' };
+    authServiceSpy.signup.and.returnValue(of(mockResponse));
 
     component.signupForm.setValue({
-      username: 'testuser',
-      email: 'test@mail.com',
-      password: 'password123',
+      username: 'sidi',
+      email: 'sidi@test.com',
+      password: '123456'
     });
 
     component.onSubmit();
-    expect(component.message).toBe("Erreur lors de l'inscription");
+    tick(); // simuler l’asynchronicité
+
+    expect(authServiceSpy.signup).toHaveBeenCalledOnceWith({
+      username: 'sidi',
+      email: 'sidi@test.com',
+      password: '123456'
+    });
+    expect(component.message).toBe('Bienvenue !');
+  }));
+
+  it('should show error message on signup error', fakeAsync(() => {
+    authServiceSpy.signup.and.returnValue(throwError(() => new Error('Erreur serveur')));
+
+    component.signupForm.setValue({
+      username: 'test',
+      email: 'test@test.com',
+      password: '123456'
+    });
+
+    component.onSubmit();
+    tick();
+
+    expect(authServiceSpy.signup).toHaveBeenCalled();
+    expect(component.message).toBe('Erreur lors de l’inscription');
+  }));
+
+  it('should disable the submit button when the form is invalid', () => {
+    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    expect(button.disabled).toBeTrue();
+  });
+
+  it('should enable the submit button when the form is valid', () => {
+    component.signupForm.setValue({
+      username: 'test',
+      email: 'test@test.com',
+      password: '123456'
+    });
+    fixture.detectChanges();
+    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    expect(button.disabled).toBeFalse();
   });
 });

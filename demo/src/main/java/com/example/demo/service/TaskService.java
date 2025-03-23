@@ -96,19 +96,19 @@ public class TaskService {
         task.assignUser(assignee);
         taskRepository.save(task);
 
-        // ✅ Envoyer un e-mail à l'utilisateur assigné
-        try {
-            String subject = "Nouvelle tâche assignée : " + task.getName();
-            String message = "<p>Bonjour " + assignee.getUsername() + ",</p>"
-                    + "<p>Vous avez été assigné à la tâche : <strong>" + task.getName() + "</strong></p>"
-                    + "<p>Description : " + task.getDescription() + "</p>"
-                    + "<p>Date limite : " + (task.getDueDate() != null ? task.getDueDate().toString() : "Non spécifiée") + "</p>"
-                    + "<p>Merci de vérifier votre tableau de bord.</p>";
+        // // ✅ Envoyer un e-mail à l'utilisateur assigné
+        // try {
+        //     String subject = "Nouvelle tâche assignée : " + task.getName();
+        //     String message = "<p>Bonjour " + assignee.getUsername() + ",</p>"
+        //             + "<p>Vous avez été assigné à la tâche : <strong>" + task.getName() + "</strong></p>"
+        //             + "<p>Description : " + task.getDescription() + "</p>"
+        //             + "<p>Date limite : " + (task.getDueDate() != null ? task.getDueDate().toString() : "Non spécifiée") + "</p>"
+        //             + "<p>Merci de vérifier votre tableau de bord.</p>";
 
-            emailService.sendEmail(assignee.getEmail(), subject, message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
-        }
+        //     emailService.sendEmail(assignee.getEmail(), subject, message);
+        // } catch (MessagingException e) {
+        //     throw new RuntimeException("Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+        // }
 
         return task;
     }

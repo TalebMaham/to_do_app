@@ -1,10 +1,12 @@
-package com.example.unit;
+package com.example.unit.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.dto.SignupRequest;
+import com.example.demo.exceptions.user_exceptions.AuthenticationException;
 import com.example.demo.exceptions.user_exceptions.EmailAlreadyUsedException;
 import com.example.demo.exceptions.user_exceptions.UsernameAlreadyTakenException;
 import com.example.demo.model.User;
@@ -58,5 +61,39 @@ public class AuthServiceTest {
         when(userRepository.existsByEmail("user1@example.com")).thenReturn(true);
 
         assertThrows(EmailAlreadyUsedException.class, () -> authService.registerUser(request));
+    }
+
+
+
+    @Test
+    void loginUser_shouldReturnUser_whenCredentialsAreValid() {
+        User user = new User("sidi", "sidi@email.com", "secret");
+        when(userRepository.findByUsername("sidi")).thenReturn(Optional.of(user));
+
+        User result = authService.loginUser("sidi", "secret");
+
+        assertEquals("sidi", result.getUsername());
+        assertEquals("secret", result.getPassword());
+    }
+
+    @Test
+    void loginUser_shouldThrow_whenUsernameNotFound() {
+        when(userRepository.findByUsername("notfound")).thenReturn(Optional.empty());
+
+        Exception ex = assertThrows(AuthenticationException.class, () ->
+                authService.loginUser("notfound", "pass"));
+
+        assertEquals("Nom d'utilisateur incorrect", ex.getMessage());
+    }
+
+    @Test
+    void loginUser_shouldThrow_whenPasswordIsWrong() {
+        User user = new User("sidi", "sidi@email.com", "correctpass");
+        when(userRepository.findByUsername("sidi")).thenReturn(Optional.of(user));
+
+        Exception ex = assertThrows(AuthenticationException.class, () ->
+                authService.loginUser("sidi", "wrongpass"));
+
+        assertEquals("Mot de passe incorrect", ex.getMessage());
     }
 }

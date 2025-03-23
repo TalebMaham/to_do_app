@@ -21,6 +21,34 @@ public class TaskRequest {
     public TaskPriority getPriority() { return priority; }
     public Long getAssigneeId() { return assigneeId; }
     public LocalDate getDeadLine() {return deadline; }
+
+    public void setAssigneeId(Long assigneeId) {
+        this.assigneeId = assigneeId;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }
 
 
