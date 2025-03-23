@@ -42,11 +42,11 @@ jobs:
         cd front
         npm install
 
-    # # 🔹 Exécuter les tests du frontend (Angular)
-    # - name: 🧪 Exécuter les tests frontend
-    #   run: |
-    #     cd front
-    #     npm test
+    # 🔹 Exécuter les tests du frontend (Angular)
+    - name: 🧪 Exécuter les tests frontend
+      run: |
+        cd front
+        npm test
 
   deploy:
     needs: test  # ✅ Exécute le déploiement SEULEMENT si les tests réussissent
