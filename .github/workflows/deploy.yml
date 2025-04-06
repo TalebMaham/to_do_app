@@ -138,7 +138,7 @@ jobs:
           docker run -d \
             --name spring-app \
             --network bridge \
-            -e SPRING_DATASOURCE_URL=jdbc:mysql://172.17.0.1:3307/spring_db \
+            -e SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3307/spring_db \
             -e SPRING_DATASOURCE_USERNAME=user \
             -e SPRING_DATASOURCE_PASSWORD=password \
             -e SPRING_PROFILES_ACTIVE=prod \
