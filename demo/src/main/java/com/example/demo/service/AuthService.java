@@ -24,7 +24,7 @@ public class AuthService {
             throw new EmailAlreadyUsedException("L'email est déjà utilisé.");
         }
 
-        // Garder le mot de passe en clair (⚠️ Non recommandé)
+        // Garder le mot de passe en clair ( Non recommandé)
         User user = new User(request.getUsername(), request.getEmail(), request.getPassword());
         userRepository.save(user);
 
@@ -35,7 +35,7 @@ public class AuthService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AuthenticationException("Nom d'utilisateur incorrect"));
 
-        // Comparaison en clair (⚠️ Non sécurisé)
+        // Comparaison en clair (Non sécurisé)
         if (!user.getPassword().equals(password)) {
             throw new AuthenticationException("Mot de passe incorrect");
         }

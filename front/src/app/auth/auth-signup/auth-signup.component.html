@@ -1,24 +1,29 @@
 <div class="signup-container">
-    <h2>Inscription</h2>
-    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label for="username">Nom d'utilisateur</label>
-        <input id="username" formControlName="username" type="text" required />
-      </div>
-  
-      <div>
-        <label for="email">Email</label>
-        <input id="email" formControlName="email" type="email" required />
-      </div>
-  
-      <div>
-        <label for="password">Mot de passe</label>
-        <input id="password" formControlName="password" type="password" required minlength="6" />
-      </div>
-  
-      <button type="submit" [disabled]="signupForm.invalid">S'inscrire</button>
-    </form>
-  
-    <p *ngIf="message">{{ message }}</p>
+  <h2>Inscription</h2>
+
+  <!-- Toast dynamique -->
+  <div *ngIf="message" [ngClass]="{'toast-success': isSuccess, 'toast-error': !isSuccess}">
+    {{ message }}
   </div>
+
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="username">Nom d'utilisateur</label>
+      <input id="username" formControlName="username" type="text" required />
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" required />
+    </div>
+
+    <div>
+      <label for="password">Mot de passe</label>
+      <input id="password" formControlName="password" type="password" required minlength="6" />
+    </div>
+
+    <button type="submit" [disabled]="signupForm.invalid">S'inscrire</button>
+  </form>
+</div>
+
   
