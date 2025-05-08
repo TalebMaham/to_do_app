@@ -13,7 +13,7 @@ Cette application permet de créer, gérer et suivre des projets en équipe, ave
 
 ### 📁 Projets
 - Création de projets avec définition d’un administrateur.
-- Récupération des projets par utilisateur (admin ou membre).
+- Récupération des projets par utilisateur.
 - Attribution de rôles (ADMIN, MEMBER, OBSERVER).
 - Suppression de projets.
 
