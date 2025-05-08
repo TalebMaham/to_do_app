@@ -44,7 +44,7 @@
     
         <div>
           <button class="btn btn-primary btn-sm" (click)="viewTaskDetails(task.id)">Voir Détails</button>
-          <button *ngIf="isMember"class="btn btn-warning btn-sm ms-2" (click)="openAssignModal(task)">Assigner</button>
+          <button *ngIf="isAdmin || isMember" class="btn btn-warning btn-sm ms-2" (click)="openAssignModal(task)">Assigner</button>
         </div>
       </li>
     </ul>
@@ -74,7 +74,7 @@
     </div>
     
     <!-- Formulaire pour ajouter une tâche -->
-    <div class="card mt-4 p-3 shadow-sm">
+    <div class="card mt-4 p-3 shadow-sm" *ngIf="isAdmin || isMember">
       <h5>Créer une nouvelle tâche</h5>
 
       <div class="mb-2">

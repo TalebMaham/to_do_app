@@ -7,7 +7,7 @@
     <p><strong>Priorité :</strong> <span [ngClass]="getPriorityClass(task?.priority)">{{ task?.priority }}</span></p>
 
     <div class="d-flex justify-content-center gap-2 mt-2">
-      <button *ngIf= "isMember" class="btn btn-primary" (click)="openEditModal()">Modifier</button>
+      <button *ngIf="isAdmin || isMember"  class="btn btn-primary" (click)="openEditModal()">Modifier</button>
       <button class="btn btn-secondary" [routerLink]="['/project-detail', projectId]">
         Retour
       </button>
