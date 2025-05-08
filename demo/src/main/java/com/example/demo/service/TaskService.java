@@ -72,47 +72,41 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
- public Task assignTask(Long taskId, Long assigneeId) {
+    public Task assignTask(Long taskId, Long assigneeId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Tâche introuvable avec l'ID : " + taskId));
-
-        Project project = task.getProject();
-
-        // Vérifier si l'utilisateur est membre du projet
+    
         User assignee = userRepository.findById(assigneeId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
-        boolean isMember = project.getProjectMembers().stream()
-                .anyMatch(pm -> pm.getUser().getId().equals(assigneeId));
-
-        if (project.getAdmin().getId().equals(assigneeId)) {
-            isMember = true;
-        }
-
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'ID : " + assigneeId));
+    
+        Project project = task.getProject();
+    
+        // Vérifie si l'utilisateur est admin ou membre du projet
+        boolean isMember = project.getAdmin().getId().equals(assigneeId) ||
+                project.getProjectMembers().stream()
+                       .anyMatch(pm -> pm.getUser().getId().equals(assigneeId));
+    
         if (!isMember) {
             throw new RuntimeException("L'utilisateur assigné ne fait pas partie du projet !");
         }
-
+    
         task.assignUser(assignee);
         taskRepository.save(task);
-
-        // // ✅ Envoyer un e-mail à l'utilisateur assigné
-        // try {
-        //     String subject = "Nouvelle tâche assignée : " + task.getName();
-        //     String message = "<p>Bonjour " + assignee.getUsername() + ",</p>"
-        //             + "<p>Vous avez été assigné à la tâche : <strong>" + task.getName() + "</strong></p>"
-        //             + "<p>Description : " + task.getDescription() + "</p>"
-        //             + "<p>Date limite : " + (task.getDueDate() != null ? task.getDueDate().toString() : "Non spécifiée") + "</p>"
-        //             + "<p>Merci de vérifier votre tableau de bord.</p>";
-
-        //     emailService.sendEmail(assignee.getEmail(), subject, message);
-        // } catch (MessagingException e) {
-        //     throw new RuntimeException("Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
-        // }
-
+    
+        // Envoi d'email en tâche asynchrone
+        String subject = "Nouvelle tâche assignée : " + task.getName();
+        String message = "<p>Bonjour " + assignee.getUsername() + ",</p>"
+                + "<p>Vous avez été assigné à la tâche : <strong>" + task.getName() + "</strong></p>"
+                + "<p>Description : " + task.getDescription() + "</p>"
+                + "<p>Date limite : " + (task.getDueDate() != null ? task.getDueDate().toString() : "Non spécifiée") + "</p>"
+                + "<p>Merci de vérifier votre tableau de bord.</p>";
+        
+        System.out.println((message));
+        emailService.sendEmail(assignee.getEmail(), subject, message);
+    
         return task;
     }
-
+    
     public List<Task> getTasksByProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Projet non trouvé avec l'ID : " + projectId));

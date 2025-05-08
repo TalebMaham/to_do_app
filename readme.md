@@ -63,7 +63,7 @@ docker-compose up --build
 ## 🔁 Exemple de flux
 
 1. L’utilisateur s’inscrit via `/signup`.
-2. Il se connecte via `/signin` → récupère un token.
+2. Il se connecte via `/signin`
 3. Il crée un projet.
 4. Il ajoute des membres avec rôles.
 5. Il crée des tâches et les assigne.
