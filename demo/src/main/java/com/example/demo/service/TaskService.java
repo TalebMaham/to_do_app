@@ -129,7 +129,6 @@ public class TaskService {
     
         Project project = task.getProject();
     
-        // Vérification améliorée de l'autorisation
         boolean isAuthorized = project.getAdmin().getId().equals(userId) ||
             project.getProjectMembers().stream().anyMatch(pm -> 
                 pm.getUser().getId().equals(userId) && !pm.getRole().equals(ProjectRole.OBSERVER));
