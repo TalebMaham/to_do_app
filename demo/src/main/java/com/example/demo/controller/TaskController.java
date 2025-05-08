@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.dto.TaskRequest;
 import com.example.demo.model.Task;
 import com.example.demo.model.TaskHistory;
 import com.example.demo.repository.TaskHistoryRepository;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.service.TaskService;
 
 import java.util.List;
@@ -19,10 +22,12 @@ public class TaskController {
 
     private final TaskService taskService;
     private final TaskHistoryRepository taskHistoryRepository;
+    private final TaskRepository taskRepository ; 
 
-    public TaskController(TaskService taskService, TaskHistoryRepository taskHistoryRepository) {
+    public TaskController(TaskService taskService, TaskHistoryRepository taskHistoryRepository, TaskRepository taskRepository ) {
         this.taskService = taskService;
         this.taskHistoryRepository = taskHistoryRepository;
+        this.taskRepository = taskRepository ; 
     }
 
 
@@ -83,9 +88,15 @@ public class TaskController {
     
 
 
-    @GetMapping("/{taskId}/history")
-    public ResponseEntity<List<TaskHistory>> getTaskHistory(@PathVariable Long taskId) {
-        return ResponseEntity.ok(taskHistoryRepository.findByTaskId(taskId));
-    }
+@GetMapping("/{taskId}/history")
+public ResponseEntity<?> getTaskHistory(@PathVariable Long taskId) {
+    Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+
+    List<TaskHistory> history = taskHistoryRepository.findByTask(task);
+    return ResponseEntity.ok(history);
+}
+
+
 }
 

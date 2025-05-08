@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.example.demo.model.Task;
 import com.example.demo.model.TaskHistory;
 
 public interface TaskHistoryRepository extends JpaRepository<TaskHistory, Long> {
-    List<TaskHistory> findByTaskId(Long taskId);
+    List<TaskHistory> findByTask(Task task);
+
 }
