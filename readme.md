@@ -89,10 +89,11 @@ docker-compose up --build
 
 ## 📈 Diagrammes UML
 
-- Diagramme de classes (`/uml/class-diagram.png`)
-- Diagramme de séquence (`/uml/sequence-diagram.png`)
+- ![Diagramme de classes](/uml/class-diagram.png)
+- ![Diagramme de séquence](/uml/sequence-diagram.png)
 
 ---
+
 
 ## 👨‍💻 Auteur
 
