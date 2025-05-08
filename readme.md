@@ -152,7 +152,9 @@ on:
 
 Une fois le `push` effectué :
 - L’application est testée automatiquement.
-- Si les tests passent, elle est **déployée sur ton VPS** avec les **dernières versions** des conteneurs.
+- Si les tests passent, elle est **déployée sur Le VPS** avec les **dernières versions** des conteneurs.
+
+⚠️ **La partie VPS n'est pas requise dans le cadre du projet.**
 
 ---
 ## 👨‍💻 Auteur
