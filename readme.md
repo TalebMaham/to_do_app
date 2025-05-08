@@ -58,6 +58,9 @@ Frontend (Angular) <--> Backend (Spring Boot) <--> BDD (JPA / H2 ou MySQL)
 docker-compose up --build
 ```
 
+👉 Une fois l'application lancée, [inscrivez-vous et utilisez l'application ici !](http://localhost:4200)
+
+
 ---
 
 ## 🔁 Exemple de flux
