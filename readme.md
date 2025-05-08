@@ -29,18 +29,17 @@ Cette application permet de créer, gérer et suivre des projets en équipe, ave
 ### 📬 Notifications (préparé)
 - Service d'envoi d'e-mails côté backend prêt à l'emploi.
 
-
 ---
 
 ## 🧱 Architecture technique
 
-```
+```plaintext
 Frontend (Angular) <--> Backend (Spring Boot) <--> BDD (JPA / H2 ou MySQL)
 ```
 
 | Côté             | Stack principale             |
 |------------------|------------------------------|
-| Frontend         | Angular 16+, TypeScript|
+| Frontend         | Angular 16+, TypeScript      |
 | Backend          | Java 17, Spring Boot 3+      |
 | Base de données  | JPA, H2 (dev) ou MySQL       |
 | Communication    | REST API avec JSON           |
@@ -48,18 +47,16 @@ Frontend (Angular) <--> Backend (Spring Boot) <--> BDD (JPA / H2 ou MySQL)
 
 ---
 
-
 ## ⚙️ Lancement
 
 ### Lancer l'application avec Docker Compose
 
 1. Assurez-vous d’avoir Docker et Docker Compose installés sur votre machine.
-
 2. Placez-vous à la racine du projet puis exécutez la commande suivante :
 
 ```bash
 docker-compose up --build
-
+```
 
 ---
 
@@ -92,15 +89,14 @@ docker-compose up --build
 
 ## 📈 Diagrammes UML
 
--  Diagramme de classes (`/uml/class-diagram.puml`)
--  Diagramme de séquence (`/uml/sequence-diagram.puml`)
+- Diagramme de classes (`/uml/class-diagram.png`)
+- Diagramme de séquence (`/uml/sequence-diagram.png`)
 
 ---
 
-
 ## 👨‍💻 Auteur
 
-Projet développé par Sidi Mohamed TALEB MAHAM 
+Projet développé par Sidi Mohamed TALEB MAHAM  
 But : Formation, démonstration et expérimentation fullstack Java/Angular.
 
 ---
