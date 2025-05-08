@@ -99,8 +99,62 @@ La base de données est prête mais vide. Commencez par vous inscrire, ajoutez d
 - ![Diagramme de séquence](/uml/sequence-diagram.png)
 
 ---
+## 🚀 Déploiement automatique via GitHub Actions
 
+Ce workflow GitHub Actions permet de tester et déployer automatiquement l'application (Angular + Spring Boot) sur un serveur VPS via Docker.
 
+---
+
+### 🔁 Déclencheur
+
+Le workflow s’exécute automatiquement **lors d’un `push` sur la branche `main`** :
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+```
+
+---
+
+### 🧪 Étape 1 : Tests (CI - Intégration continue)
+
+1. **Clonage du dépôt**
+2. **Installation Java 17 (Spring Boot)**
+3. **Tests backend avec Maven**
+4. **Installation Node.js 18**
+5. **Installation des dépendances Angular**
+6. **Tests frontend avec `ng test`**
+
+---
+
+### 🚀 Étape 2 : Déploiement (CD - Déploiement continu)
+
+**Exécutée uniquement si les tests passent (`needs: test`)** :
+
+1. **Connexion à Docker Hub**
+2. **Construction et push des images Docker**
+   - `spring-app:latest`
+   - `angular-app:latest`
+3. **Connexion SSH au VPS**
+4. **Vérification / installation de Docker & Docker Compose**
+5. **Téléchargement des nouvelles images**
+6. **Arrêt et suppression des anciens conteneurs**
+7. **Lancement (ou redémarrage) du conteneur MySQL**
+8. **Déploiement des nouveaux conteneurs :**
+   - Spring Boot → `localhost:8080`
+   - Angular → `localhost:4200`
+
+---
+
+### ✅ Résultat
+
+Une fois le `push` effectué :
+- L’application est testée automatiquement.
+- Si les tests passent, elle est **déployée sur ton VPS** avec les **dernières versions** des conteneurs.
+
+---
 ## 👨‍💻 Auteur
 
 Projet développé par Sidi Mohamed TALEB MAHAM  
