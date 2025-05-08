@@ -49,14 +49,6 @@ Content-Type: application/json
 }
 ```
 
----
-
-### 🔁 Exemple Postman
-
-- **Méthode** : `POST`
-- **URL** : `http://localhost:8080/api/auth/signup`
-- **Body** : `raw > JSON`
-- **Content-Type** : `application/json`
 
 ---
 
@@ -322,7 +314,8 @@ Crée une nouvelle tâche dans un projet donné.
 }
 ```
 
-> ⚠️ Seuls les membres ou administrateurs du projet peuvent créer une tâche Depuis le front mais : ![[Pasted image 20250508194315.png]]
+> ⚠️ Seuls les membres ou administrateurs du projet peuvent créer une tâche Depuis le front mais :
+![Remarque ](/uml/nb.png)
 >
 
 
@@ -362,7 +355,8 @@ Crée une nouvelle tâche dans un projet donné.
 }
 ```
 
-> ⚠️ Seuls les membres ou administrateurs du projet peuvent modifier  une tâche Depuis le front mais : ![[Pasted image 20250508194315.png]]
+> ⚠️ Seuls les membres ou administrateurs du projet peuvent modifier  une tâche Depuis le front mais :
+![Remarque ](/uml/nb.png)
 >
 
 
