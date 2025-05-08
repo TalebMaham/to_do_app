@@ -85,6 +85,8 @@ docker-compose up --build
 | PATCH   | `/api/tasks/{id}`               | Modifier une tâche (partiellement)  |
 | GET     | `/api/tasks/{id}/history`       | Historique de la tâche              |
 
+***Documentation de l'api ==> [Documentation de l'api](doc_api.md)
+
 ---
 
 ## 📈 Diagrammes UML
