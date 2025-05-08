@@ -38,7 +38,7 @@ public class TaskController {
                 request.getDescription(), 
                 request.getDueDate(), 
                 request.getPriority(),
-                request.getAssigneeId(),// Maintenant facultatif
+                request.getAssigneeId(),
                 request.getDeadLine() 
         );
 
