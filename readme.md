@@ -52,14 +52,15 @@ Frontend (Angular) <--> Backend (Spring Boot) <--> BDD (JPA / H2 ou MySQL)
 ### Lancer l'application avec Docker Compose
 
 1. Assurez-vous d’avoir Docker et Docker Compose installés sur votre machine.
-2. Placez-vous à la racine du projet puis exécutez la commande suivante :
+2. Placez-vous à la racine du projet, puis exécutez la commande suivante :
 
 ```bash
 docker-compose up --build
 ```
 
-👉 Une fois l'application lancée, [inscrivez-vous et utilisez l'application ici !](http://localhost:4200)
+👉 Une fois l'application lancée, accédez à l’interface ici : [http://localhost:4200](http://localhost:4200)
 
+La base de données est prête mais vide. Commencez par vous inscrire, ajoutez d'autres utilisateurs, puis utilisez l'application !
 
 ---
 
